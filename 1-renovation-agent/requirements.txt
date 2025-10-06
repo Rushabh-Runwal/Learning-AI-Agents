@@ -1,0 +1,12 @@
+google-adk
+pysqlite3-binary
+pdfplumber
+google-cloud-aiplatform
+cloudpickle
+pydantic
+pytest
+overrides
+scikit-learn
+reportlab
+google-cloud-storage
+deprecated
