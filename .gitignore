@@ -107,6 +107,10 @@ pdm.lock
 #   in version control.
 .pdm.toml
 
+# uv
+#   uv.lock contains resolved dependencies and should generally be excluded
+uv.lock
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
 
