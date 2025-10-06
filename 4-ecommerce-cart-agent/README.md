@@ -1,5 +1,7 @@
 # Ecommerce Cart Agent - Stateful Multi-Agent System
 
+📹 **[Watch Tutorial](https://youtube.com/shorts/9cNMWPo7rNM?si=xHMv135kl8-Yr4Uz)**
+
 This example demonstrates a comprehensive ecommerce shopping cart system built with ADK (Agent Development Kit). It showcases how to create a stateful multi-agent system that manages the complete shopping experience from product browsing to order completion.
 
 ## What is this System?
