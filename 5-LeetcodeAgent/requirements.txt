@@ -1,0 +1,11 @@
+# LeetCode Solver Sequential Agent Dependencies
+
+# Core ADK framework
+google-adk==0.3.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Development and testing (optional)
+# pytest>=7.4.0
+# pytest-asyncio>=0.21.0
