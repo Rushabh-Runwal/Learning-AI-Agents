@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Topic - Course Generator</title>
+    <meta name="description" content="Interactive learning games for this topic">
+    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7c3aed',
+                        'primary-dark': '#5b21b6',
+                        'primary-light': '#a855f7'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-purple-100">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <a href="../" class="text-primary hover:text-primary-dark font-medium flex items-center gap-2">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        All Topics
+                    </a>
+                    <span class="text-gray-400">•</span>
+                    <span id="topic-breadcrumb" class="text-gray-600">Loading...</span>
+                </div>
+                <h1 id="topic-title" class="text-2xl font-bold text-gray-900">Loading Topic...</h1>
+                <p id="topic-description" class="text-gray-600 mt-1"></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="topic-stats" class="hidden bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <i data-lucide="gamepad-2" class="w-4 h-4 inline mr-1"></i>
+                    <span id="games-count">0</span> Games
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-12">
+            <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading games...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="hidden text-center py-12">
+            <i data-lucide="alert-circle" class="w-16 h-16 text-red-400 mx-auto mb-4"></i>
+            <h2 class="text-xl font-medium text-gray-900 mb-2">Topic Not Found</h2>
+            <p class="text-gray-600 mb-6">The requested topic could not be found or hasn't been generated yet.</p>
+            <a href="../" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                Browse All Topics
+            </a>
+        </div>
+
+        <!-- Games Grid -->
+        <div id="games-section" class="hidden">
+            <!-- Progress Overview -->
+            <div id="progress-card" class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Your Progress</h2>
+                    <button id="reset-progress-btn" class="text-sm text-gray-500 hover:text-primary">Reset Progress</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-primary" id="total-score">0</div>
+                        <div class="text-sm text-gray-600">Total Score</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600" id="completed-games">0</div>
+                        <div class="text-sm text-gray-600">Games Completed</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="completion-percentage">0%</div>
+                        <div class="text-sm text-gray-600">Completion</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="progress-bar">
+                        <div id="overall-progress" class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Games List -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="gamepad-2" class="w-5 h-5 text-primary"></i>
+                    Interactive Games
+                </h2>
+                <div id="games-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Games will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/scripts/common.js"></script>
+    <script>
+        // Get topic from URL (robust to trailing slash)
+        const _path = window.location.pathname.replace(/\/+$/, '');
+        const topicSlug = _path.split('/').pop();
+        
+        // DOM Elements
+        const elements = {
+            pageTitle: document.getElementById('page-title'),
+            topicBreadcrumb: document.getElementById('topic-breadcrumb'),
+            topicTitle: document.getElementById('topic-title'),
+            topicDescription: document.getElementById('topic-description'),
+            topicStats: document.getElementById('topic-stats'),
+            gamesCount: document.getElementById('games-count'),
+            loading: document.getElementById('loading'),
+            errorState: document.getElementById('error-state'),
+            gamesSection: document.getElementById('games-section'),
+            gamesGrid: document.getElementById('games-grid'),
+            totalScore: document.getElementById('total-score'),
+            completedGames: document.getElementById('completed-games'),
+            completionPercentage: document.getElementById('completion-percentage'),
+            overallProgress: document.getElementById('overall-progress'),
+            resetProgressBtn: document.getElementById('reset-progress-btn')
+        };
+
+        // State
+        let topicData = null;
+        let progress = {};
+
+        // Initialize page
+        async function init() {
+            await loadTopic();
+            loadProgress();
+            setupEventListeners();
+            lucide.createIcons();
+        }
+
+        function setupEventListeners() {
+            elements.resetProgressBtn.addEventListener('click', resetProgress);
+        }
+
+        async function loadTopic() {
+            try {
+                const response = await fetch(`/api/topics/${topicSlug}`, { cache: 'no-store' });
+                
+                if (!response.ok) {
+                    throw new Error('Topic not found');
+                }
+                
+                topicData = await response.json();
+                renderTopic();
+                
+            } catch (error) {
+                console.error('Error loading topic:', error);
+                showError();
+            }
+        }
+
+        // Poll until games are available (useful if user opens page before generation finishes)
+        async function waitForGames(timeoutMs = 60000) {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                try {
+                    const resp = await fetch(`/api/topics/${topicSlug}`, { cache: 'no-store' });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.games && data.games.length > 0) {
+                            topicData = data;
+                            renderTopic();
+                            return true;
+                        }
+                    }
+                } catch {}
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            return false;
+        }
+
+        function renderTopic() {
+            // Update page title and meta
+            const title = `${topicData.topic} - Course Generator`;
+            elements.pageTitle.textContent = title;
+            document.title = title;
+            
+            // Update header
+            elements.topicBreadcrumb.textContent = topicData.topic;
+            elements.topicTitle.textContent = topicData.topic;
+            elements.topicDescription.textContent = topicData.description || '';
+            
+            // Update stats
+            if (topicData.games && topicData.games.length > 0) {
+                elements.gamesCount.textContent = topicData.games.length;
+                elements.topicStats.classList.remove('hidden');
+                
+                renderGames();
+                updateProgress();
+                
+                elements.loading.classList.add('hidden');
+                elements.gamesSection.classList.remove('hidden');
+            } else {
+                // No games yet - show generating state and start polling
+                showGeneratingState();
+                waitForGames();
+            }
+        }
+
+        function renderGames() {
+            if (!topicData.games || topicData.games.length === 0) {
+                elements.gamesGrid.innerHTML = '<p class="text-gray-600 text-center col-span-full">No games available yet.</p>';
+                return;
+            }
+
+            elements.gamesGrid.innerHTML = topicData.games.map((game, index) => {
+                const gameProgress = progress[game.slug] || { completed: false, score: 0, attempts: 0 };
+                const isCompleted = gameProgress.completed;
+                const score = gameProgress.score || 0;
+                const maxScore = game.maxScore || 10;
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${isCompleted ? 'ring-2 ring-green-200' : ''}">
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2">${escapeHtml(game.title)}</h3>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                                        <span class="flex items-center gap-1">
+                                            <i data-lucide="target" class="w-4 h-4"></i>
+                                            Max ${maxScore} points
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            2-3 min
+                                        </span>
+                                        <span class="px-2 py-1 bg-purple-100 text-primary text-xs rounded-full font-medium">
+                                            ${game.type || 'game'}
+                                        </span>
+                                    </div>
+                                </div>
+                                ${isCompleted ? `
+                                    <div class="flex flex-col items-end">
+                                        <div class="flex items-center gap-1 text-green-600 mb-1">
+                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                            <span class="text-sm font-medium">Completed</span>
+                                        </div>
+                                        <div class="text-lg font-bold text-green-600">${score}/${maxScore}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            ${isCompleted ? `
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                        <span>Your Score</span>
+                                        <span>${Math.round((score/maxScore)*100)}%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-bar-fill bg-green-500" style="width: ${(score/maxScore)*100}%"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="flex gap-2">
+                                <a href="/topics/${topicSlug}/${game.slug}" 
+                                   class="flex-1 text-center px-4 py-2 ${isCompleted ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary-dark'} text-white rounded-lg transition-colors font-medium">
+                                    ${isCompleted ? 'Play Again' : 'Start Game'}
+                                </a>
+                                ${gameProgress.attempts > 0 ? `
+                                    <button onclick="viewStats('${game.slug}')" 
+                                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                            
+                            ${gameProgress.attempts > 0 ? `
+                                <div class="mt-3 pt-3 border-t border-gray-100">
+                                    <div class="flex justify-between text-xs text-gray-500">
+                                        <span>Attempts: ${gameProgress.attempts}</span>
+                                        <span>Best: ${gameProgress.bestScore || score}/${maxScore}</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Re-initialize Lucide icons
+            lucide.createIcons();
+        }
+
+        function showGeneratingState() {
+            elements.loading.innerHTML = `
+                <div class="text-center py-12">
+                    <i data-lucide="cog" class="w-16 h-16 text-primary mx-auto mb-4 animate-spin"></i>
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Generating Games</h2>
+                    <p class="text-gray-600 mb-6">We're creating interactive learning games for this topic. This usually takes 1-2 minutes.</p>
+                    <button onclick="location.reload()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                        Check Again
+                    </button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function showError() {
+            elements.loading.classList.add('hidden');
+            elements.errorState.classList.remove('hidden');
+        }
+
+        function loadProgress() {
+            const saved = CourseGenerator.loadProgress(topicSlug);
+            progress = saved ? saved.games || {} : {};
+        }
+
+        function saveProgress() {
+            CourseGenerator.saveProgress(topicSlug, { games: progress });
+        }
+
+        function updateProgress() {
+            if (!topicData.games) return;
+            
+            const completed = Object.values(progress).filter(p => p.completed).length;
+            const totalScore = Object.values(progress).reduce((sum, p) => sum + (p.score || 0), 0);
+            const maxPossibleScore = topicData.games.reduce((sum, game) => sum + (game.maxScore || 10), 0);
+            const percentage = topicData.games.length > 0 ? Math.round((completed / topicData.games.length) * 100) : 0;
+            
+            elements.totalScore.textContent = totalScore;
+            elements.completedGames.textContent = completed;
+            elements.completionPercentage.textContent = `${percentage}%`;
+            elements.overallProgress.style.width = `${percentage}%`;
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress for this topic?')) {
+                progress = {};
+                saveProgress();
+                updateProgress();
+                renderGames();
+                CourseGenerator.showToast('Progress reset successfully', 'success');
+            }
+        }
+
+        function viewStats(gameSlug) {
+            const gameProgress = progress[gameSlug];
+            if (!gameProgress) return;
+            
+            CourseGenerator.showToast(`${gameProgress.attempts} attempts, best score: ${gameProgress.bestScore || gameProgress.score}`, 'info');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Listen for game completion from child windows
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'gameCompleted') {
+                const { gameSlug, score, maxScore } = event.data;
+                
+                if (!progress[gameSlug]) {
+                    progress[gameSlug] = { completed: false, score: 0, attempts: 0, bestScore: 0 };
+                }
+                
+                progress[gameSlug].attempts++;
+                progress[gameSlug].score = score;
+                progress[gameSlug].bestScore = Math.max(progress[gameSlug].bestScore || 0, score);
+                progress[gameSlug].completed = true;
+                
+                saveProgress();
+                updateProgress();
+                renderGames();
+                
+                CourseGenerator.showToast(`Game completed! Score: ${score}/${maxScore}`, 'success');
+            }
+        });
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

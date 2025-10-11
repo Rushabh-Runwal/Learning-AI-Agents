@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Gates Challenge - Digital Logic Gates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../styles/theme.css">
+    <script src="../../scripts/common.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-purple-800 mb-2">Compound Gates Challenge</h1>
+            <p class="text-purple-600">Topic: Digital Logic Gates</p>
+            <div id="score-display" class="mt-4">
+                <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">
+                    Score: <span id="current-score">0</span> / 10
+                </span>
+            </div>
+        </header>
+
+        <!-- Game Container -->
+        <div id="game-container" class="max-w-2xl mx-auto">
+            <div id="question-container" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div id="progress-bar" class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                    <div id="progress" class="bg-purple-600 h-2 rounded-full" style="width: 0%"></div>
+                </div>
+                
+                <div id="question-content">
+                    <!-- Questions will be inserted here -->
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="btn-secondary" disabled>Previous</button>
+                    <button id="next-btn" class="btn-primary">Next</button>
+                    <button id="submit-btn" class="btn-primary hidden">Submit Quiz</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Data
+        const questions = [
+        {
+                "correct": 1,
+                "options": [
+                        "It is an AND gate followed by an OR gate.",
+                        "It is an AND gate followed by a NOT gate.",
+                        "It is a NOT gate followed by an AND gate.",
+                        "It is two AND gates combined."
+                ],
+                "question": "What is a NAND gate?"
+        },
+        {
+                "correct": 0,
+                "question": "What is the unique function of an XOR (Exclusive OR) gate?",
+                "options": [
+                        "Outputs 1 only if the inputs are DIFFERENT.",
+                        "Outputs 1 only if the inputs are the SAME.",
+                        "Outputs 1 only if both inputs are 1.",
+                        "Outputs 1 only if at least one input is 1."
+                ]
+        },
+        {
+                "options": [
+                        "An OR gate followed by an AND gate.",
+                        "An OR gate followed by another OR gate.",
+                        "A NOT gate followed by an OR gate.",
+                        "An OR gate followed by a NOT gate."
+                ],
+                "question": "How is a NOR gate constructed?",
+                "correct": 3
+        },
+        {
+                "question": "Which gate outputs a 1 only when its two inputs are the SAME?",
+                "options": [
+                        "NAND",
+                        "XOR",
+                        "XNOR",
+                        "AND"
+                ],
+                "correct": 2
+        },
+        {
+                "correct": 0,
+                "question": "Why is the NAND gate often called a 'universal gate'?",
+                "options": [
+                        "Because any other logic gate can be created using only NAND gates.",
+                        "Because they consume the least amount of power.",
+                        "Because they are the fastest gates.",
+                        "Because they are the oldest type of gate."
+                ]
+        }
+];
+        
+        // Game State
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        
+        // Initialize game
+        function initGame() {
+            displayQuestion();
+            updateProgress();
+            window.__GAME_OK__ = true; // Validation flag
+        }
+        
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-content');
+            
+            container.innerHTML = `
+                <h3 class="text-xl font-semibold mb-4">${question.question}</h3>
+                <div class="space-y-3">
+                    ${question.options.map((option, index) => `
+                        <label class="flex items-center p-3 border rounded-lg hover:bg-purple-50 cursor-pointer">
+                            <input type="radio" name="answer" value="${index}" class="mr-3">
+                            <span>${option}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').style.display = currentQuestion === questions.length - 1 ? 'none' : 'block';
+            document.getElementById('submit-btn').style.display = currentQuestion === questions.length - 1 ? 'block' : 'none';
+        }
+        
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                updateProgress();
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                updateProgress();
+            }
+        }
+        
+        function saveAnswer() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (selected) {
+                answers[currentQuestion] = parseInt(selected.value);
+            }
+        }
+        
+        function submitQuiz() {
+            saveAnswer();
+            calculateScore();
+            showResults();
+        }
+        
+        function calculateScore() {
+            score = 0;
+            questions.forEach((question, index) => {
+                if (answers[index] === question.correct) {
+                    score += 2; // 2 points per question = 10 total
+                }
+            });
+            
+            document.getElementById('current-score').textContent = score;
+        }
+        
+        function showResults() {
+            document.getElementById('question-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').textContent = score + ' / 10';
+            
+            let message = '';
+            if (score >= 8) message = '🎉 Excellent work!';
+            else if (score >= 6) message = '👍 Good job!';
+            else if (score >= 4) message = '📚 Keep studying!';
+            else message = '💪 Practice makes perfect!';
+            
+            document.getElementById('score-message').textContent = message;
+            
+            // Persist progress so topic page can read it later
+            try {
+                const key = 'digital-logic-gates';
+                const existing = (window.CourseGenerator && window.CourseGenerator.loadProgress)
+                    ? (window.CourseGenerator.loadProgress(key) || { "games": {} })
+                    : { "games": {} };
+                const prev = existing.games['compound-gates-challenge'] || { "attempts": 0, "bestScore": 0 };
+                existing.games['compound-gates-challenge'] = {
+                    "completed": true,
+                    "score": score,
+                    "attempts": (prev.attempts || 0) + 1,
+                    "bestScore": Math.max(prev.bestScore || 0, score)
+                };
+                if (window.CourseGenerator && window.CourseGenerator.saveProgress) {
+                    window.CourseGenerator.saveProgress(key, existing);
+                }
+            } catch (e) { /* ignore */ }
+        }
+        
+        function retry() {
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            initGame();
+        }
+        
+        // Event Listeners
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+        document.getElementById('submit-btn').addEventListener('click', submitQuiz);
+        document.getElementById('retry-btn').addEventListener('click', retry);
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

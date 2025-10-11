@@ -1,0 +1,18 @@
+{
+  "topic": "Digital Logic Gates",
+  "games": [
+    {
+      "slug": "intro-to-digital-logic-quiz",
+      "title": "Digital Logic Fundamentals Quiz",
+      "type": "quiz",
+      "maxScore": 10
+    },
+    {
+      "slug": "compound-gates-challenge",
+      "title": "Compound Gates Challenge",
+      "type": "quiz",
+      "maxScore": 10
+    }
+  ],
+  "createdAt": "2025-10-08T11:52:22.283223Z"
+}

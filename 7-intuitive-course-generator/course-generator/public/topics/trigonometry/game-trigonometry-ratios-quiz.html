@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigonometry Ratios Quiz - Trigonometry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../styles/theme.css">
+    <script src="../../scripts/common.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-purple-800 mb-2">Trigonometry Ratios Quiz</h1>
+            <p class="text-purple-600">Topic: Trigonometry</p>
+            <div id="score-display" class="mt-4">
+                <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">
+                    Score: <span id="current-score">0</span> / 10
+                </span>
+            </div>
+        </header>
+
+        <!-- Game Container -->
+        <div id="game-container" class="max-w-2xl mx-auto">
+            <div id="question-container" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div id="progress-bar" class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                    <div id="progress" class="bg-purple-600 h-2 rounded-full" style="width: 0%"></div>
+                </div>
+                
+                <div id="question-content">
+                    <!-- Questions will be inserted here -->
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="btn-secondary" disabled>Previous</button>
+                    <button id="next-btn" class="btn-primary">Next</button>
+                    <button id="submit-btn" class="btn-primary hidden">Submit Quiz</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Data
+        const questions = [
+        {
+                "question": "In a right-angled triangle, the Sine (sin) of an angle is the ratio of...",
+                "options": [
+                        "Adjacent / Hypotenuse",
+                        "Opposite / Hypotenuse",
+                        "Opposite / Adjacent",
+                        "Hypotenuse / Opposite"
+                ],
+                "correct": 1
+        },
+        {
+                "question": "The Cosine (cos) of an angle is the ratio of...",
+                "options": [
+                        "Adjacent / Hypotenuse",
+                        "Opposite / Hypotenuse",
+                        "Opposite / Adjacent",
+                        "Adjacent / Opposite"
+                ],
+                "correct": 0
+        },
+        {
+                "question": "The Tangent (tan) of an angle is the ratio of...",
+                "correct": 2,
+                "options": [
+                        "Adjacent / Hypotenuse",
+                        "Hypotenuse / Adjacent",
+                        "Opposite / Adjacent",
+                        "Opposite / Hypotenuse"
+                ]
+        },
+        {
+                "question": "What is 'SOH CAH TOA'?",
+                "correct": 3,
+                "options": [
+                        "A theorem about circles",
+                        "A formula for area",
+                        "The Pythagorean Theorem",
+                        "A mnemonic to remember the trig ratios (Sine, Cosine, Tangent)"
+                ]
+        },
+        {
+                "options": [
+                        "10 * sin(30\u00b0)",
+                        "10 / sin(30\u00b0)",
+                        "10 * cos(30\u00b0)",
+                        "sin(30\u00b0) / 10"
+                ],
+                "question": "You have a right triangle with a hypotenuse of 10 and an angle of 30\u00b0. How would you calculate the length of the side OPPOSITE the angle?",
+                "correct": 0
+        }
+];
+        
+        // Game State
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        
+        // Initialize game
+        function initGame() {
+            displayQuestion();
+            updateProgress();
+            window.__GAME_OK__ = true; // Validation flag
+        }
+        
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-content');
+            
+            container.innerHTML = `
+                <h3 class="text-xl font-semibold mb-4">${question.question}</h3>
+                <div class="space-y-3">
+                    ${question.options.map((option, index) => `
+                        <label class="flex items-center p-3 border rounded-lg hover:bg-purple-50 cursor-pointer">
+                            <input type="radio" name="answer" value="${index}" class="mr-3">
+                            <span>${option}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').style.display = currentQuestion === questions.length - 1 ? 'none' : 'block';
+            document.getElementById('submit-btn').style.display = currentQuestion === questions.length - 1 ? 'block' : 'none';
+        }
+        
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                updateProgress();
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                updateProgress();
+            }
+        }
+        
+        function saveAnswer() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (selected) {
+                answers[currentQuestion] = parseInt(selected.value);
+            }
+        }
+        
+        function submitQuiz() {
+            saveAnswer();
+            calculateScore();
+            showResults();
+        }
+        
+        function calculateScore() {
+            score = 0;
+            questions.forEach((question, index) => {
+                if (answers[index] === question.correct) {
+                    score += 2; // 2 points per question = 10 total
+                }
+            });
+            
+            document.getElementById('current-score').textContent = score;
+        }
+        
+        function showResults() {
+            document.getElementById('question-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').textContent = score + ' / 10';
+            
+            let message = '';
+            if (score >= 8) message = '🎉 Excellent work!';
+            else if (score >= 6) message = '👍 Good job!';
+            else if (score >= 4) message = '📚 Keep studying!';
+            else message = '💪 Practice makes perfect!';
+            
+            document.getElementById('score-message').textContent = message;
+            
+            // Persist progress so topic page can read it later
+            try {
+                const key = 'trigonometry';
+                const existing = (window.CourseGenerator && window.CourseGenerator.loadProgress)
+                    ? (window.CourseGenerator.loadProgress(key) || { "games": {} })
+                    : { "games": {} };
+                const prev = existing.games['trigonometry-ratios-quiz'] || { "attempts": 0, "bestScore": 0 };
+                existing.games['trigonometry-ratios-quiz'] = {
+                    "completed": true,
+                    "score": score,
+                    "attempts": (prev.attempts || 0) + 1,
+                    "bestScore": Math.max(prev.bestScore || 0, score)
+                };
+                if (window.CourseGenerator && window.CourseGenerator.saveProgress) {
+                    window.CourseGenerator.saveProgress(key, existing);
+                }
+            } catch (e) { /* ignore */ }
+        }
+        
+        function retry() {
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            initGame();
+        }
+        
+        // Event Listeners
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+        document.getElementById('submit-btn').addEventListener('click', submitQuiz);
+        document.getElementById('retry-btn').addEventListener('click', retry);
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

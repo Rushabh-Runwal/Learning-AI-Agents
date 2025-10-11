@@ -1,0 +1,18 @@
+{
+  "topic": "Quantum Computing",
+  "games": [
+    {
+      "slug": "qubit-fundamentals-quiz",
+      "title": "Qubit Fundamentals",
+      "type": "quiz",
+      "maxScore": 10
+    },
+    {
+      "slug": "bit-vs-qubit-match",
+      "title": "Classical Bit vs. Qubit",
+      "type": "drag-match",
+      "maxScore": 10
+    }
+  ],
+  "createdAt": "2025-10-08T17:40:38.417693Z"
+}

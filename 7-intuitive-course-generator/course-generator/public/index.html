@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Generator - Interactive Learning Games</title>
+    <meta name="description" content="AI-generated interactive learning games for any topic">
+    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="stylesheet" href="styles/theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7c3aed',
+                        'primary-dark': '#5b21b6',
+                        'primary-light': '#a855f7'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-purple-100">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">
+                    <i data-lucide="brain" class="inline-block w-10 h-10 text-primary mr-3"></i>
+                    MINI-GAMES
+                </h1>
+                <p class="text-lg text-gray-600">AI-powered interactive learning games for any topic</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Generate New Topic Section -->
+        <section class="mb-12">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="mb-6">
+                    <i data-lucide="plus-circle" class="w-16 h-16 text-primary mx-auto mb-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Generate New Learning Games</h2>
+                    <p class="text-gray-600">Enter any topic and we'll create interactive mini-games to help you learn</p>
+                </div>
+                
+                <div class="max-w-md mx-auto">
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            id="topic-input" 
+                            placeholder="e.g., trigonometry, photosynthesis, world history..." 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        >
+                        <button 
+                            id="generate-btn" 
+                            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
+                        >
+                            Generate
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">This will create 2-3 interactive games for your topic</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Available Topics Section -->
+        <section>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Available Learning Topics</h2>
+                <button id="refresh-btn" class="text-primary hover:text-primary-dark font-medium flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-12">
+                <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p class="text-gray-600">Loading topics...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-12">
+                <i data-lucide="book-open" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No Topics Yet</h3>
+                <p class="text-gray-600 mb-6">Generate your first learning topic above to get started!</p>
+            </div>
+
+            <!-- Topics Grid -->
+            <div id="topics-grid" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Topics will be inserted here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-purple-100 mt-16">
+        <div class="max-w-6xl mx-auto px-4 py-8 text-center">
+            <p class="text-gray-600">
+                Built with AI • Powered by Interactive Learning
+            </p>
+        </div>
+    </footer>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // DOM Elements
+        const elements = {
+            topicInput: document.getElementById('topic-input'),
+            generateBtn: document.getElementById('generate-btn'),
+            refreshBtn: document.getElementById('refresh-btn'),
+            loading: document.getElementById('loading'),
+            emptyState: document.getElementById('empty-state'),
+            topicsGrid: document.getElementById('topics-grid')
+        };
+
+        // State
+        let topics = [];
+        let isGenerating = false;
+
+        // Initialize app
+        async function init() {
+            setupEventListeners();
+            await loadTopics();
+            lucide.createIcons();
+        }
+
+        function setupEventListeners() {
+            elements.generateBtn.addEventListener('click', generateTopic);
+            elements.refreshBtn.addEventListener('click', loadTopics);
+            
+            elements.topicInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    generateTopic();
+                }
+            });
+
+            elements.topicInput.addEventListener('input', (e) => {
+                elements.generateBtn.disabled = !e.target.value.trim() || isGenerating;
+            });
+        }
+
+        async function loadTopics() {
+            showLoading();
+            
+            try {
+                const response = await fetch('/api/topics', { cache: 'no-store' });
+                topics = await response.json();
+                
+                if (topics.length === 0) {
+                    showEmptyState();
+                } else {
+                    renderTopics();
+                }
+            } catch (error) {
+                console.error('Error loading topics:', error);
+                CourseGenerator.showToast('Failed to load topics', 'error');
+                showEmptyState();
+            }
+        }
+
+        function slugify(text) {
+            return (text || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '') || 'topic';
+        }
+
+        async function generateTopic() {
+            const topicName = elements.topicInput.value.trim();
+            if (!topicName || isGenerating) return;
+
+            isGenerating = true;
+            elements.generateBtn.disabled = true;
+            elements.generateBtn.textContent = 'Generating...';
+            
+            try {
+                const response = await fetch(`/api/generate/${encodeURIComponent(topicName)}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    CourseGenerator.showToast(`Started generating games for "${topicName}"`, 'success');
+                    elements.topicInput.value = '';
+
+                    // Poll for the new topic to appear (up to ~1 minute)
+                    const targetSlug = slugify(topicName);
+                    await waitForTopicAvailable(targetSlug);
+                    await loadTopics();
+                } else {
+                    throw new Error(result.message || 'Generation failed');
+                }
+            } catch (error) {
+                console.error('Error generating topic:', error);
+                CourseGenerator.showToast('Failed to generate topic', 'error');
+            } finally {
+                isGenerating = false;
+                elements.generateBtn.disabled = false;
+                elements.generateBtn.textContent = 'Generate';
+            }
+        }
+
+        async function waitForTopicAvailable(slug, timeoutMs = 60000) {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                try {
+                    const resp = await fetch(`/api/topics/${encodeURIComponent(slug)}`, { cache: 'no-store' });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        // Consider available as soon as metadata exists
+                        return true;
+                    }
+                } catch {}
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            return false;
+        }
+
+        function showLoading() {
+            elements.loading.classList.remove('hidden');
+            elements.emptyState.classList.add('hidden');
+            elements.topicsGrid.classList.add('hidden');
+        }
+
+        function showEmptyState() {
+            elements.loading.classList.add('hidden');
+            elements.emptyState.classList.remove('hidden');
+            elements.topicsGrid.classList.add('hidden');
+        }
+
+        function renderTopics() {
+            elements.loading.classList.add('hidden');
+            elements.emptyState.classList.add('hidden');
+            elements.topicsGrid.classList.remove('hidden');
+
+            elements.topicsGrid.querySelector('.grid').innerHTML = topics.map(topic => `
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">${escapeHtml(topic.topic)}</h3>
+                                <p class="text-gray-600 text-sm">${escapeHtml(topic.description || '')}</p>
+                            </div>
+                            <div class="flex items-center gap-2 text-primary text-sm">
+                                <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+                                <span>${topic.games ? topic.games.length : 0}</span>
+                            </div>
+                        </div>
+                        
+                        ${topic.games && topic.games.length > 0 ? `
+                            <div class="space-y-2 mb-4">
+                                ${topic.games.slice(0, 3).map(game => `
+                                    <div class="flex items-center justify-between py-2 px-3 bg-purple-50 rounded-lg">
+                                        <span class="text-sm font-medium text-gray-700">${escapeHtml(game.title)}</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-primary font-medium">${game.maxScore}pts</span>
+                                            <span class="text-xs px-2 py-1 bg-primary text-white rounded-full">${escapeHtml(game.type)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                ${topic.games.length > 3 ? `
+                                    <p class="text-xs text-gray-500 text-center">+${topic.games.length - 3} more games</p>
+                                ` : ''}
+                            </div>
+                        ` : `
+                            <div class="text-center py-4 text-gray-500">
+                                <i data-lucide="clock" class="w-8 h-8 mx-auto mb-2"></i>
+                                <p class="text-sm">Games are being generated...</p>
+                            </div>
+                        `}
+                        
+                        <div class="flex gap-2">
+                            <a href="/topics/${topic.slug}" class="flex-1 text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">
+                                ${topic.games && topic.games.length > 0 ? 'Play Games' : 'View Topic'}
+                            </a>
+                            ${topic.games && topic.games.length > 0 ? `
+                                <button onclick="shareTopic('${topic.slug}')" class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">
+                            Created ${formatDate(topic.createdAt)}
+                        </p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-initialize Lucide icons for new content
+            lucide.createIcons();
+        }
+
+        function shareTopic(slug) {
+            const url = `${window.location.origin}/topics/${slug}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Learning Games',
+                    text: 'Check out these interactive learning games!',
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    CourseGenerator.showToast('Link copied to clipboard!', 'success');
+                });
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'today';
+            if (diffDays === 1) return 'yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

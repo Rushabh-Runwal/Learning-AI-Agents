@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trig Identity Match-Up - Trigonometry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../styles/theme.css" />
+    <script src="../../scripts/common.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-purple-800 mb-2">Trig Identity Match-Up</h1>
+            <p class="text-purple-600">Topic: Trigonometry</p>
+            <div id="score-display" class="mt-4">
+                <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Score: <span id="current-score">0</span> / 10</span>
+            </div>
+        </header>
+        <main id="game-container" class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <p class="mb-4 text-sm text-purple-700">Drag items from left to their matching definitions on the right. (Prototype)</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ul id="terms" class="space-y-2"></ul>
+                <ul id="matches" class="space-y-2"></ul>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="submit-btn" class="btn-primary">Check</button>
+            </div>
+        </main>
+    </div>
+    <script>
+        const pairs = [
+  {
+    "term": "Cosecant (csc)",
+    "match": "1 / sin(\u03b8)"
+  },
+  {
+    "term": "Secant (sec)",
+    "match": "1 / cos(\u03b8)"
+  },
+  {
+    "match": "1 / tan(\u03b8)",
+    "term": "Cotangent (cot)"
+  },
+  {
+    "match": "sin(\u03b8) / cos(\u03b8)",
+    "term": "Tangent (tan)"
+  },
+  {
+    "term": "Cosine (cos)",
+    "match": "Adjacent / Hypotenuse"
+  },
+  {
+    "term": "Sine (sin)",
+    "match": "Opposite / Hypotenuse"
+  }
+];
+        let score = 0;
+        function init() {
+            const t = document.getElementById('terms');
+            const m = document.getElementById('matches');
+            pairs.forEach((p, i) => {
+                const liT = document.createElement('li');
+                liT.className = 'p-3 border rounded bg-purple-50';
+                liT.textContent = p.term;
+                t.appendChild(liT);
+                const liM = document.createElement('li');
+                liM.className = 'p-3 border rounded';
+                liM.textContent = p.match;
+                m.appendChild(liM);
+            });
+            window.__GAME_OK__ = true;
+        }
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            score = Math.min(10, pairs.length * 2); // placeholder scoring
+            document.getElementById('current-score').textContent = score;
+        });
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
