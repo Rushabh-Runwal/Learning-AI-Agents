@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "content-orchestration-agent"
+version = "1.0.0"
+description = "AI-powered content orchestration agent for generating educational content"
+authors = ["Rushabh Runwal"]
+readme = "README.md"
+packages = [{include = "content_orchestration"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+google-adk = "^1.16.0"
+google-generativeai = ">=0.8.5"
+python-dotenv = ">=1.1.0"
+fastapi = ">=0.115.0"
+uvicorn = ">=0.30.0"
+python-multipart = ">=0.0.6"
+google-cloud-aiplatform = {extras = ["adk", "agent_engines"], version = "^1.42.0"}
+absl-py = "^2.1.0"
+cloudpickle = "^3.0.0"
+
+[tool.poetry.scripts]
+deploy-local = "deployment.local:main"
+deploy-remote = "deployment.remote:main"
+cleanup = "deployment.cleanup:cleanup_deployments"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
