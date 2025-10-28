@@ -5,8 +5,8 @@ from .sub_agents.inventory_agent.agent import inventory_agent
 from .sub_agents.checkout_agent.agent import checkout_agent
 
 # Create the root ecommerce cart agent
-ecommerce_cart_agent = Agent(
-    name="ecommerce_cart",
+root_agent = Agent(
+    name="ecommerce_cart_agent",
     model="gemini-2.0-flash",
     description="Main ecommerce cart agent for managing shopping experience", 
     instruction="""

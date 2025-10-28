@@ -9,7 +9,7 @@ from .sub_agents.application_planner import application_planner
 # from .sub_agents.eligibility_and_compliance_agent import eligibility_and_compliance_agent
 from .sub_agents.budget_and_funding_agent import budget_and_funding_agent
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-live-2.5-flash-preview-native-audio-09-2025"
 
 
 education_counselor = Agent(
