@@ -1,0 +1,17 @@
+venv
+.venv
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.gitignore
+*.md
+!README.md
+remote_seller_agents/
+test_agent_engine.py
+test_agent_engine.sh
+deploy_to_agent_engine.py
+uv.lock
+.env.example
