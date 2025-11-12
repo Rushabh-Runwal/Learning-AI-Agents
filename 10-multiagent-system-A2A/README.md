@@ -1,4 +1,4 @@
-# Day 10: Multi-Agent System with Google ADK and A2A Protocol
+# Project 10: Multi-Agent System with Google ADK and A2A Protocol
 
 Building a multi-agent AI system using Google's Agent Development Kit with Agent-to-Agent (A2A) communication protocol.
 
@@ -35,7 +35,7 @@ The system consists of:
 ## Video Tutorial
 
 Watch the complete walkthrough:
-[Day 10: Multi-Agent Systems with Google ADK](https://www.youtube.com/watch?v=iTIcdSiFjaM&list=PL68NYUAEHLCEq-W9FEkCQeM0ZOGWI5dNa)
+[Project 10: Multi-Agent Systems with Google ADK](https://www.youtube.com/watch?v=iTIcdSiFjaM&list=PL68NYUAEHLCEq-W9FEkCQeM0ZOGWI5dNa)
 
 ## Setup
 
@@ -94,4 +94,4 @@ Access the web UI at http://localhost:8000
 
 ## Part of Series
 
-This is Day 10 of the 31 Days, 31 AI Agents series, exploring different AI agent architectures and patterns.
+This is Project 10 of the AI Agent Series, exploring different AI agent architectures and patterns.

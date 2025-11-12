@@ -1,4 +1,4 @@
-# Day 9: Travel Itinerary Planner - Multi-Agent System
+# Project 9: Travel Itinerary Planner - Multi-Agent System
 
 A production-ready multi-agent system built with **Google ADK** and **Apify APIs** that demonstrates enterprise-grade AI agent orchestration. This project teaches three critical concepts for building real-world AI systems:
 
@@ -318,4 +318,4 @@ This is an educational project demonstrating multi-agent systems. Feel free to:
 
 ## 📝 License
 
-This project is part of the "31 Days, 31 AI Agents" learning series.
+This project is part of the AI Agent Series learning series.

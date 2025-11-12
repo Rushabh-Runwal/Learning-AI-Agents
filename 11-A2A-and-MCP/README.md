@@ -1,4 +1,4 @@
-# Day 11: Understanding A2A and MCP Protocols
+# Project 11: Understanding A2A and MCP Protocols
 
 Building interoperable AI agents using Agent-to-Agent (A2A) and Model Context Protocol (MCP).
 
@@ -169,9 +169,9 @@ uv run python currency_agent/test_client.py
 
 ## Part of Series
 
-This is Day 11 of the 31 Days, 31 AI Agents series, exploring different AI agent architectures and protocols.
+This is Project 11 of the AI Agent Series, exploring different AI agent architectures and protocols.
 
-**Previous Days:**
-- Day 10: Multi-Agent Systems with Google ADK
-- Day 9: Travel Itinerary Agent
+**Previous Projects:**
+- Project 10: Multi-Agent Systems with Google ADK
+- Project 9: Travel Itinerary Agent
 - [See full series](https://github.com/Rushabh-Runwal/Learning-AI-Agents)

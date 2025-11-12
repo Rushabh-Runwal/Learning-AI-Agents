@@ -7,7 +7,7 @@ name = "travel-itinerary-planner"
 version = "1.0.0"
 description = "A multi-agent travel itinerary planner using Google ADK and Apify APIs"
 authors = [
-    {name = "31 Days 31 AI Agents", email = "example@example.com"}
+    {name = "AI Agent Series", email = "example@example.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.9"

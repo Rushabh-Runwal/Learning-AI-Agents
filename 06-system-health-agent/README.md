@@ -52,4 +52,4 @@ Is my system running out of memory or disk space?
 - AI-powered report synthesis and recommendations
 - Independent sub-agent architecture
 
-Part of the **31 AI Agents in 31 Days** project. 
+Part of the AI Agent Series project. 

@@ -1,63 +1,80 @@
-# 31 Days, 31 AI Agents
+# AI Agent Series
 
-A comprehensive journey through building 31 different AI agents, exploring various architectures, patterns, and frameworks.
+A comprehensive series exploring various AI agent architectures, patterns, and frameworks.
 
 ## About This Series
 
-This repository documents my journey of building one AI agent per day for 31 days. Each project explores different aspects of AI agent development, from simple task automation to complex multi-agent systems.
+This repository documents my journey of building different AI agents, from simple task automation to complex multi-agent systems.
 
 ## Projects
 
-### Day 1: Renovation Agent
+### Project 1: Renovation Agent
 Home renovation planning and recommendation system.
 - **Location**: `01-renovation-agent/`
 
-### Day 2: Personal Assistant
+### Project 2: Personal Assistant
 AI-powered personal assistant with multi-modal capabilities.
 - **Location**: `02-personal_assistant/`
 
-### Day 3: Education Counselor
+### Project 3: Education Counselor
 Personalized education guidance and course recommendation agent.
 - **Location**: `03-education_counselor/`
 
-### Day 4: E-commerce Cart Agent
+### Project 4: E-commerce Cart Agent
 Smart shopping cart management with recommendation engine.
 - **Location**: `04-ecommerce-cart-agent/`
 
-### Day 5: LeetCode Solver Agent
+### Project 5: LeetCode Solver Agent
 Automated coding problem solver with explanation generation.
 - **Location**: `05-LeetcodeAgent/`
 
-### Day 6: System Health Agent
+### Project 6: System Health Agent
 System monitoring and health diagnostics agent.
 - **Location**: `06-system-health-agent/`
 
-### Day 7: Intuitive Course Generator
+### Project 7: Intuitive Course Generator
 AI-powered interactive course content generator with gamification.
 - **Location**: `07-intuitive-course-generator/`
 
-### Day 8: Content Orchestration
+### Project 8: Content Orchestration
 Multi-format content generation and orchestration system.
 - **Location**: `08-content-orchestration/`
 
-### Day 9: Travel Itinerary Agent
+### Project 9: Travel Itinerary Agent
 Comprehensive travel planning with multi-agent coordination.
 - **Location**: `09-travel-itinerary-agent/`
 
-### Day 10: Multi-Agent System with Google ADK
+### Project 10: Multi-Agent System with Google ADK
 Building sophisticated multi-agent systems using Google's Agent Development Kit and A2A protocol.
 - **Location**: `10-multiagent-system-A2A/`
 - **Video**: [Watch Tutorial](https://www.youtube.com/watch?v=iTIcdSiFjaM&list=PL68NYUAEHLCEq-W9FEkCQeM0ZOGWI5dNa)
 - **Tech Stack**: Google ADK, A2A Protocol, Imagen 3, Python 3.12
 - **Features**: Sequential agents, loop patterns, iterative image generation and scoring
 
-### Day 11: A2A and MCP Integration
+### Project 11: A2A and MCP Integration
 Exploring Agent-to-Agent communication with Model Context Protocol.
 - **Location**: `11-A2A-and-MCP/`
 
-### Day 12: A2A Action Engine
+### Project 12: A2A Action Engine
 Advanced action engine implementation for A2A protocol.
 - **Location**: `12-A2A-Action-Engine/`
+
+### Project 13: Lead Generation Agent
+AI-powered lead generation and research agent.
+- **Location**: `13-leadGenerationAgent/`
+
+### Project 14: Gemini CLI Inside Agent
+Integrating Gemini CLI within an AI agent framework.
+- **Location**: `14-gemini-cli-inside-agent/`
+
+### Project 15: Software Bug Assistant
+Automated software bug detection and assistance agent.
+- **Location**: `15-software-bug-assistant/`
+
+### Project 16: Personal Expense Agent
+Personal expense management agent with multimodal capabilities.
+- **Location**: `16-personal-expense-agent/`
+- **Video**: [Watch Tutorial](https://youtube.com/shorts/VYaf10bIgh4)
 
 ## Tech Stack
 
@@ -70,7 +87,7 @@ Advanced action engine implementation for A2A protocol.
 ## Video Series
 
 Follow along with the complete video series on YouTube:
-[31 Days, 31 AI Agents Playlist](https://www.youtube.com/playlist?list=PL68NYUAEHLCEq-W9FEkCQeM0ZOGWI5dNa)
+[AI Agent Series Playlist](https://www.youtube.com/playlist?list=PL68NYUAEHLCEq-W9FEkCQeM0ZOGWI5dNa)
 
 ## Getting Started
 
@@ -112,7 +129,10 @@ Learning-AI-Agents/
 ├── 10-multiagent-system-A2A/
 ├── 11-A2A-and-MCP/
 ├── 12-A2A-Action-Engine/
-└── python/                    # Additional Python examples
+├── 13-leadGenerationAgent/
+├── 14-gemini-cli-inside-agent/
+├── 15-software-bug-assistant/
+└── 16-personal-expense-agent/
 ```
 
 ## Learning Objectives

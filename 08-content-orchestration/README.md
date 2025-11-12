@@ -1,4 +1,4 @@
-# Day 8: Content Orchestration Agent
+# Project 8: Content Orchestration Agent
 
 An AI-powered content orchestration agent built with **Google's Agent Development Kit (ADK) 1.16.0** that generates comprehensive educational content on any topic.
 
@@ -133,4 +133,5 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete instructions.
 
 ---
 
-**Day 8 of 31** - Building production-grade AI agents! 🚀
+**Project 8 of AI Agent Series** - Building production-grade AI agents!
+
