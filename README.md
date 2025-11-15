@@ -1,5 +1,5 @@
 # AI Agent Series
-
+   
 A comprehensive series exploring various AI agent architectures, patterns, and frameworks.
 
 ## About This Series
@@ -76,6 +76,18 @@ Personal expense management agent with multimodal capabilities.
 - **Location**: `16-personal-expense-agent/`
 - **Video**: [Watch Tutorial](https://youtube.com/shorts/VYaf10bIgh4)
 
+### Project 17: ADK Code Review Assistant
+Intelligent multi-agent code review system powered by Google ADK and Gemini models.
+- **Location**: `17-adk-code-review-assistant/`
+- **Tech Stack**: Google ADK, Gemini 2.5 Flash/Pro, Python AST, Automated Testing
+- **Features**: Code structure analysis, PEP 8 style checking, automated testing, personalized feedback, iterative code fixing
+
+### Project 18: Sports Agent with ADK, MCP & AlloyDB
+Sports analytics agent integrating Google ADK, Model Context Protocol, and AlloyDB for comprehensive sports data analysis.
+- **Location**: `18-sports-agent-adk-mcp-alloydb/`
+- **Tech Stack**: Google ADK, AlloyDB, MCP (Model Context Protocol), Vertex AI, Toolbox
+- **Features**: Sports data analytics, database integration, advanced agent communication protocols
+
 ## Tech Stack
 
 - **Languages**: Python, JavaScript/Node.js
@@ -132,7 +144,9 @@ Learning-AI-Agents/
 ├── 13-leadGenerationAgent/
 ├── 14-gemini-cli-inside-agent/
 ├── 15-software-bug-assistant/
-└── 16-personal-expense-agent/
+├── 16-personal-expense-agent/
+├── 17-adk-code-review-assistant/
+└── 18-sports-agent-adk-mcp-alloydb/
 ```
 
 ## Learning Objectives
